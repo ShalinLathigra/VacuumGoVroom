@@ -20,6 +20,8 @@ public class PlayerMovement : MonoBehaviour
 	[SerializeField]
 	private float angVelocity;
 
+	Rigidbody rb;
+
 	//w/s for forward/backward
 	//a/d for rotate left/right
 
@@ -34,6 +36,10 @@ public class PlayerMovement : MonoBehaviour
 	 //Want to be able to handle::
 	 	//	Some forced rotation
 		//	
+	void Start()
+	{
+		rb = GetComponent<Rigidbody>();
+	}
 
 	void FixedUpdate()
 	{
@@ -59,6 +65,6 @@ public class PlayerMovement : MonoBehaviour
 				velocity = (velocity / Mathf.Abs(velocity)) * ((Mathf.Abs(velocity) > stopSpeed) ? velocity : 0.0f);
 			}
 		}
-		transform.position += (transform.forward * velocity * Time.deltaTime);
+		rb.MovePosition(transform.position + transform.forward * velocity * Time.deltaTime);
 	}
 }

@@ -20,7 +20,7 @@ public class GrimeAffector : MonoBehaviour
 	private bool active;
 
 	[SerializeField]
-	private int effectRadius;
+	private float effectRadius;
 	
     // Start is called before the first frame update
     void Start()
@@ -31,7 +31,7 @@ public class GrimeAffector : MonoBehaviour
 	void Update()
 	{
 		if (active)
-			grimeController.ModifyCircle(transform.position, effectRadius, (int)mode);
+			grimeController.ModifyCircle(transform.position, (int)effectRadius, (int)mode);
 	}
 
 	public void Init(Mode _mode, bool _active, int _effectRadius)
@@ -44,5 +44,15 @@ public class GrimeAffector : MonoBehaviour
 	public void Toggle()
 	{
 		active = !active;
+	}
+
+	public float GetRadius()
+	{
+		return effectRadius;
+	}
+
+	public void SetRadius(float _effectRadius)
+	{
+		effectRadius = _effectRadius;
 	}
 }

@@ -11,6 +11,8 @@ public class GrimeController : MonoBehaviour
 			Adding more Grime according to game rules
 
 			Last thing that needs to happen is actual generation of the initial Grime Map, which is further affected by the player & other objects
+
+			//Also want to be able to track all objects in the original scene so that it can calculate where exactly the initial map is set up.
 	*/
 
 	[SerializeField]
@@ -21,12 +23,18 @@ public class GrimeController : MonoBehaviour
 	[SerializeField]
 	private string textureReference;
 
+	int maxSquares;
+	int clearedSquares;
+
 	void Start()
 	{	
 		texture = new Texture2D(resolution * (int)transform.localScale.x, resolution * (int)transform.localScale.z);
 		GetComponent<Renderer>().material.SetTexture(textureReference, texture);
 
 		InitTexture();
+
+		maxSquares = texture.width * texture.height - (texture.width + texture.height - 1);
+		clearedSquares = 0;
 	}
 
 	private void InitTexture()
@@ -78,6 +86,7 @@ public class GrimeController : MonoBehaviour
 							if (i * i + j * j < radius * radius)
 							{
 								texture.SetPixel(origin.x + i, origin.y + j, colors[mode]);
+								clearedSquares++;
 							}
 						}
 					}
@@ -85,5 +94,6 @@ public class GrimeController : MonoBehaviour
 			}
 		}
         texture.Apply(false);
+		Debug.Log(clearedSquares + " / " + maxSquares + " = " + ((float)clearedSquares / (float)maxSquares * 100.0f) + "%");
 	}
 }
