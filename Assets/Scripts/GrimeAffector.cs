@@ -26,6 +26,8 @@ public class GrimeAffector : MonoBehaviour
     void Start()
     {
 		active = false;
+		if (!grimeController)
+			grimeController = GameObject.FindGameObjectWithTag("GrimeLayer").GetComponent<GrimeController>();
     }
 
 	void Update()
