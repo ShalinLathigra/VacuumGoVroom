@@ -131,9 +131,6 @@ public class GrimeController : MonoBehaviour
 		{
 			Vector3 start = g.transform.position;
 			Bounds bounds = g.GetComponent<Collider>().bounds;
-			Debug.Log(bounds);
-			Debug.Log(bounds.min);
-			Debug.Log(bounds.max);
 			ModifySquare(bounds.min, bounds.max, 0);
 		}
 	}
