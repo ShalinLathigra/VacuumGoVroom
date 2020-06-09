@@ -14,7 +14,8 @@ public class GrimeController : MonoBehaviour
 
 			//Also want to be able to track all objects in the original scene so that it can calculate where exactly the initial map is set up.
 	*/
-
+	[SerializeField]
+	GameObject[] solidObjects;
 	[SerializeField]
 	private int resolution;
 	private Texture2D texture;
@@ -22,19 +23,27 @@ public class GrimeController : MonoBehaviour
 
 	[SerializeField]
 	private string textureReference;
+	[SerializeField]
+	private Renderer grimeRenderer;
 
 	int maxSquares;
 	int clearedSquares;
+	Transform pTransform;
 
 	void Start()
 	{	
-		texture = new Texture2D(resolution * (int)transform.localScale.x, resolution * (int)transform.localScale.z);
-		GetComponent<Renderer>().material.SetTexture(textureReference, texture);
+		if (!grimeRenderer)
+			grimeRenderer = GameObject.FindGameObjectWithTag("GrimeLayer").GetComponent<Renderer>();
+		pTransform = this.GetComponentInParent<Transform>();
+		texture = new Texture2D(resolution * (int)pTransform.localScale.x, resolution * (int)pTransform.localScale.z);
+		grimeRenderer.material.SetTexture(textureReference, texture);
 
 		InitTexture();
 
 		maxSquares = texture.width * texture.height - (texture.width + texture.height - 1);
 		clearedSquares = 0;
+
+		CullSolid();
 	}
 
 	private void InitTexture()
@@ -56,17 +65,21 @@ public class GrimeController : MonoBehaviour
 
 	public Vector2Int ConvertPosToCoords (Vector3 input)
 	{
-		float deltaX = transform.position.x - input.x;
-		float deltaZ = transform.position.z - input.z;
 
-		int xPos = (int)(deltaX * resolution / 10) + (int)(texture.width / 2);
-		int zPos = (int)(deltaZ * resolution / 10) + (int)(texture.height / 2);
-		return new Vector2Int(xPos, zPos);
+		//translated coords (Position relative to center of pTransform)
+		Vector3 translatedCoords = pTransform.position - input;
+		//converted Coords accounting for scale & natural dimensions of the 5x5 plane
+		Vector2 convertedCoords = new Vector2(translatedCoords.x / pTransform.localScale.x, translatedCoords.z / pTransform.localScale.z) / 5.0f;
+		//This goes from -1 to 1
+		convertedCoords = convertedCoords*0.5f + new Vector2(0.5f, 0.5f);
+		convertedCoords.x *= texture.width;
+		convertedCoords.y *= texture.height;
+		return new Vector2Int((int)convertedCoords.x, (int)convertedCoords.y);
 	}
 
 	public void ModifyCircle(Vector3 position, int radius, int mode)
 	{
-		//Actually, can I Use a few squares to approximate this well enough?
+		//Actually, can I Use a few squares to approximate this well enough? If this is too bad, do it this way instead
 		/*
 			First has side lengths 1.4 * rad 
 			Second Set is 1.7 * rad  by rad & vice versa
@@ -94,6 +107,34 @@ public class GrimeController : MonoBehaviour
 			}
 		}
         texture.Apply(false);
-		Debug.Log(clearedSquares + " / " + maxSquares + " = " + ((float)clearedSquares / (float)maxSquares * 100.0f) + "%");
+	}
+
+	public void ModifySquare(Vector3 start, Vector3 end, int mode)
+	{	
+		//Generated from Collider.bounds in the call
+		Vector2Int convertedStart = ConvertPosToCoords(start);
+		Vector2Int convertedEnd = ConvertPosToCoords(end);
+
+		for (int i = Mathf.Max(Mathf.Min(convertedStart.x, convertedEnd.x), 0); i<Mathf.Min(Mathf.Max(convertedStart.x, convertedEnd.x), texture.width); i++)
+		{
+			for (int j = Mathf.Max(Mathf.Min(convertedStart.y, convertedEnd.y), 0); j<Mathf.Min(Mathf.Max(convertedStart.y, convertedEnd.y), texture.height); j++)
+			{
+				texture.SetPixel(i, j, colors[mode]);
+			}	
+		}
+		texture.Apply(false);
+	}
+
+	public void CullSolid()
+	{
+		foreach(GameObject g in solidObjects)
+		{
+			Vector3 start = g.transform.position;
+			Bounds bounds = g.GetComponent<Collider>().bounds;
+			Debug.Log(bounds);
+			Debug.Log(bounds.min);
+			Debug.Log(bounds.max);
+			ModifySquare(bounds.min, bounds.max, 0);
+		}
 	}
 }
