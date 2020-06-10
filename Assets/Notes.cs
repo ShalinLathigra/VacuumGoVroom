@@ -15,14 +15,9 @@ Next Step:
 	[3][CORE] Improve Camera motion fluidity	//In Progress
 
 	[4][FLUFF] Add Dust particles/glowy dots to god rays
-
 	[5][CORE] Design & Implement Dog algorithms with placeholder model
 	[6][CORE] Start in Main Menu, select button to start game
 	[7][CORE] Play noise when roomba is vacuuming
-
-	[6][CORE] Start in Main Menu, select button to start game
-	[7][CORE] Play noise when roomba is vacuuming
-
 	git commit --signoff
 
 *************************************************
@@ -44,7 +39,5 @@ Next Step:
 	Polish only until August 20th
 	Release it somewhere on August 21st
 		Itch.io
-
-	
 
 ************************************************/
