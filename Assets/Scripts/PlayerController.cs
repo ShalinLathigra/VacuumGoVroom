@@ -4,6 +4,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(PlayerMovement))]
 [RequireComponent(typeof(GrimeAffector))]
+[RequireComponent(typeof(AudioSource))]
 public class PlayerController : MonoBehaviour
 {
 	private GrimeAffector grimeAffector;
@@ -21,7 +22,7 @@ public class PlayerController : MonoBehaviour
     {
 		playerMovement = GetComponent<PlayerMovement>();
         grimeAffector = GetComponent<GrimeAffector>();
-
+		
 		if (endRadius == 0)
 			endRadius = grimeAffector.GetRadius();
 		grimeAffector.SetRadius(startRadius);
