@@ -16,7 +16,8 @@ Next Step:
 
 	[4][FLUFF] Add Dust particles/glowy dots to god rays
 	[5][CORE] Design & Implement Dog algorithms with placeholder model
-
+	[6][CORE] Start in Main Menu, select button to start game
+	[7][CORE] Play noise when roomba is vacuuming
 	git commit --signoff
 
 *************************************************

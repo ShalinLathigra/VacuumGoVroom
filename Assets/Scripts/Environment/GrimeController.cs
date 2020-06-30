@@ -46,6 +46,11 @@ public class GrimeController : MonoBehaviour
 		CullSolid();
 	}
 
+	void Update()
+	{
+		CullSolid();
+	}
+
 	private void InitTexture()
 	{
 		colors = new Color[2];
@@ -94,12 +99,12 @@ public class GrimeController : MonoBehaviour
 				{
 					if (origin.y + j > 0 && origin.y + j < texture.height)
 					{
-						if (texture.GetPixel(origin.x + i, origin.y + j).a > 0)
+						if (texture.GetPixel(origin.x + i, origin.y + j).a != mode)
 						{
 							if (i * i + j * j < radius * radius)
 							{
 								texture.SetPixel(origin.x + i, origin.y + j, colors[mode]);
-								clearedSquares++;
+								clearedSquares += (mode == (int)GrimeAffector.Mode.Subtract) ? 1 : -1;
 							}
 						}
 					}

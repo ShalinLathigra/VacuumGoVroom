@@ -17,6 +17,7 @@ public class GrimeAffector : MonoBehaviour
 
 	[SerializeField]
 	private Mode mode;
+	[SerializeField]
 	private bool active;
 
 	[SerializeField]
@@ -25,7 +26,6 @@ public class GrimeAffector : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-		active = false;
 		if (!grimeController)
 			grimeController = GameObject.FindGameObjectWithTag("GrimeLayer").GetComponent<GrimeController>();
     }
@@ -52,9 +52,12 @@ public class GrimeAffector : MonoBehaviour
 	{
 		return effectRadius;
 	}
-
 	public void SetRadius(float _effectRadius)
 	{
 		effectRadius = _effectRadius;
+	}
+	public void SetActive(bool _active)
+	{
+		active = _active;
 	}
 }
