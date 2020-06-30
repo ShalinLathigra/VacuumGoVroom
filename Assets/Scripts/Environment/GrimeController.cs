@@ -53,17 +53,19 @@ public class GrimeController : MonoBehaviour
 
 	private void InitTexture()
 	{
-		colors = new Color[2];
+		colors = new Color[3];
 		colors[0] = new Color(0, 0, 0, 0);
         colors[1] = Color.white;
+		colors[2] = new Color(0, 1, 0, 0);
         int mipCount = Mathf.Min(3, texture.mipmapCount);
 
-        Color[] cols = texture.GetPixels(0);
-        for (int i = 0; i < cols.Length; ++i)
-        {
-            cols[i] = Color.Lerp(cols[i], colors[0], 0.33f);
-        }
-        texture.SetPixels(cols, 0);
+		for (int i = 0; i < texture.width; i++)
+		{
+			for (int j = 0; j < texture.height; j++)
+			{
+        		texture.SetPixel(i, j, colors[1]);
+			}
+		}
 
         texture.Apply(false);
 	}
@@ -99,12 +101,16 @@ public class GrimeController : MonoBehaviour
 				{
 					if (origin.y + j > 0 && origin.y + j < texture.height)
 					{
-						if (texture.GetPixel(origin.x + i, origin.y + j).a != mode)
+						Color current = texture.GetPixel(origin.x + i, origin.y + j);
+						if (current != colors[2])
 						{
-							if (i * i + j * j < radius * radius)
+							if (current != colors[mode])
 							{
-								texture.SetPixel(origin.x + i, origin.y + j, colors[mode]);
-								clearedSquares += (mode == (int)GrimeAffector.Mode.Subtract) ? 1 : -1;
+								if (i * i + j * j < radius * radius)
+								{
+									texture.SetPixel(origin.x + i, origin.y + j, colors[mode]);
+									clearedSquares += (mode == (int)GrimeAffector.Mode.Subtract) ? 1 : -1;
+								}
 							}
 						}
 					}
@@ -136,7 +142,7 @@ public class GrimeController : MonoBehaviour
 		{
 			Vector3 start = g.transform.position;
 			Bounds bounds = g.GetComponent<Collider>().bounds;
-			ModifySquare(bounds.min, bounds.max, 0);
+			ModifySquare(bounds.min, bounds.max, 2);
 		}
 	}
 }
